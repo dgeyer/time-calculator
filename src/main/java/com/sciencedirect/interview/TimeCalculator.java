@@ -1,30 +1,30 @@
 package com.sciencedirect.interview;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class TimeCalculator implements Calculable<String> {
 
 	private static final String COLON = ":";
-	
-	private final Validable<String> timeValidator;
-	
-	private TimeCalculator(Validable<String> validator){this.timeValidator=validator;};
-	
-	public static Calculable<String> getInstance(Validable<String> validator){
-		return new TimeCalculator(validator);
+
+	private Validable<String> timeValidator;
+
+	private TimeCalculator(Validable<String> timeValidator) {
+		this.timeValidator = timeValidator;
 	}
 
-	public String sum(String a, String b) {
-		
-		timeValidator.validate(a, b);
-		
-		String[] splitA = a.split(COLON);
-		String[] splitB = b.split(COLON);
+	public static TimeCalculator getNewInstance(Validable<String> timeValidator) {
+		return new TimeCalculator(timeValidator);
+	}
+
+	public String sum(String firstTime, String secondTime) {
+
+		timeValidator.validate(firstTime, secondTime);
+
+		String[] splitFirstTimeString = firstTime.split(COLON);
+		String[] splitSecondTimeString = secondTime.split(COLON);
 		StringBuilder sum = new StringBuilder();
-	
-		String[] resultArray = sum(splitA, splitB);
-		sum.append(resultArray[0]).append(COLON).append(resultArray[1]).append(COLON).append(resultArray[2]);
+
+		String[] resultArray = sum(splitFirstTimeString, splitSecondTimeString);
+		sum.append(resultArray[0]).append(COLON).append(resultArray[1])
+				.append(COLON).append(resultArray[2]);
 		return sum.toString();
 	}
 
@@ -32,15 +32,16 @@ public class TimeCalculator implements Calculable<String> {
 		String[] result = new String[3];
 		int take = 0;
 		for (int i = splitA.length - 1; i >= 0; i--) {
-			int sum = Integer.valueOf(splitA[i]) + Integer.valueOf(splitB[i]) + take;
+			int sum = Integer.valueOf(splitA[i]) + Integer.valueOf(splitB[i])
+					+ take;
 			if (i > 0 && sum >= 60) {
 				sum = sum - 60;
 				take = 1;
-			}else {
+			} else {
 				take = 0;
 			}
-			result[i] = i > 0 ? String.format("%02d", sum) : String
-					.format("%02d", sum);
+			result[i] = i > 0 ? String.format("%02d", sum) : String.format(
+					"%02d", sum);
 		}
 		return result;
 	}

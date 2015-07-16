@@ -43,7 +43,7 @@ public class TimeValidatorTest {
 		exception.expect(IllegalArgumentException.class);
 		timeValidator.validate("23:60:53", "23:60:53");
 	}
-	
+
 	@Test
 	public void ifSecExceedRangeShouldThrowException() {
 		exception.expect(IllegalArgumentException.class);

@@ -12,25 +12,30 @@ public class TimeValidator implements Validable<String> {
 	private TimeValidator() {
 	}
 
-	public static Validable<String> getInstance() {
-		return new TimeValidator();
+	private static volatile TimeValidator instance = new TimeValidator();
+
+	public static TimeValidator getInstance() {
+		if (instance == null) {
+			synchronized (TimeCalculator.class) {
+				if (instance == null)
+					instance = new TimeValidator();
+			}
+		}
+		return instance;
 	}
 
 	@Override
-	public void validate(String a, String b) {
-		Long start = System.currentTimeMillis();
+	public void validate(String firstTime, String secondTime) {
 		StringBuilder error = new StringBuilder();
 
-		if (a != null && b != null) {
-			error.append(match(a, b));
+		if (firstTime != null && secondTime != null) {
+			error.append(match(firstTime, secondTime));
 		} else {
-			error.append(buildNullError(a, b));
+			error.append(buildNullError(firstTime, secondTime));
 		}
 		if (error.length() > 0) {
 			throw new IllegalArgumentException(error.toString());
 		}
-		System.out.println(" validate input was "
-				+ (System.currentTimeMillis() - start));
 	}
 
 	private String buildNullError(String a, String b) {
@@ -44,14 +49,14 @@ public class TimeValidator implements Validable<String> {
 		return error.toString();
 	}
 
-	private String match(String a, String b) {
+	private String match(String firstTime, String secondTime) {
 		StringBuilder error = new StringBuilder();
-		Matcher matcherA = timePattern.matcher(a);
-		Matcher matcherB = timePattern.matcher(b);
-		if (!matcherA.matches()) {
+		Matcher matcherFirstTime = timePattern.matcher(firstTime);
+		Matcher matcherSecondTime = timePattern.matcher(secondTime);
+		if (!matcherFirstTime.matches()) {
 			error.append("First argument does not matches the pattern hh:mm:ss ");
 		}
-		if (!matcherB.matches()) {
+		if (!matcherSecondTime.matches()) {
 			error.append("Second argument does not matches the pattern hh:mm:ss");
 		}
 		return error.toString();

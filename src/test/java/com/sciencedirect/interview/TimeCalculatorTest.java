@@ -8,7 +8,8 @@ import org.mockito.Mockito;
 
 public class TimeCalculatorTest {
 
-	Calculable<String> timeCalculator = TimeCalculator.getInstance(TimeValidator.getInstance());
+	Calculable<String> timeCalculator = TimeCalculator
+			.getNewInstance(TimeValidator.getInstance());
 
 	@Rule
 	public final ExpectedException exception = ExpectedException.none();
@@ -20,7 +21,7 @@ public class TimeCalculatorTest {
 	}
 
 	@Test
-	public void shouldReturnOneOneOne() {
+	public void shouldReturnTwentyFiveOneOne() {
 		String result = timeCalculator.sum("23:59:59", "01:01:01");
 		Assert.assertEquals("25:01:00", result);
 	}
@@ -56,13 +57,7 @@ public class TimeCalculatorTest {
 	}
 
 	@Test
-	public void ifHoursAreMoreThan24ShouldBeginFrom0() {
-		String result = timeCalculator.sum("23:01:01", "01:01:01");
-		Assert.assertEquals("24:02:02", result);
-	}
-
-	@Test
-	public void ifAddingaDayShouldReturnTheSame() {
+	public void shouldSumMoreThan24Hours() {
 		String result = timeCalculator.sum("23:01:01", "24:00:00");
 		Assert.assertEquals("47:01:01", result);
 	}
@@ -76,11 +71,11 @@ public class TimeCalculatorTest {
 	@Test
 	public void shouldCallValidate() {
 		TimeValidator timeValidator = Mockito.mock(TimeValidator.class);
-		timeCalculator = TimeCalculator.getInstance(timeValidator);
-		String a = "01:01:01";
-		String b = "01:01:01";
-		timeCalculator.sum(a,b);
-		Mockito.verify(timeValidator, Mockito.times(1)).validate(a,b);
-
+		timeCalculator = TimeCalculator.getNewInstance(timeValidator);
+		String firstTimeToAdd = "01:01:01";
+		String secondTimeToAdd = "01:01:01";
+		timeCalculator.sum(firstTimeToAdd, secondTimeToAdd);
+		Mockito.verify(timeValidator, Mockito.times(1)).validate(
+				firstTimeToAdd, secondTimeToAdd);
 	}
 }
