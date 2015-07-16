@@ -8,11 +8,11 @@ public class TimeValidator implements Validable<String> {
 	private static final String TIME_PATTERN = "^[0-9]{2,}:[0-5][0-9]:[0-5][0-9]$";
 
 	private final Pattern timePattern = Pattern.compile(TIME_PATTERN);
+	
+	private static volatile TimeValidator instance = new TimeValidator();
 
 	private TimeValidator() {
 	}
-
-	private static volatile TimeValidator instance = new TimeValidator();
 
 	public static TimeValidator getInstance() {
 		if (instance == null) {
